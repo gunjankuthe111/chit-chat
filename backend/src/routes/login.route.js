@@ -26,7 +26,7 @@ app.post("/", async (req, res) => {
     bcrypt.compare(password, isExist.password, function (err, result) {
       if (result) {
         const token = jwt.sign(
-          {email, name: isExist.name, isAdmin: isExist.isAdmin},
+          {id:isExist._id,email, name: isExist.name, isAdmin: isExist.isAdmin},
           JWTSECTET,
           {expiresIn: "7 days"}
         );

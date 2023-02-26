@@ -12,6 +12,7 @@ const middleware = async (req, res, next) => {
     const varify = jwt.verify(token, JWTSECTET);
     if (varify.email) {
       req.userEmail = varify.email;
+      req.id = varify.id;
       next();
     } else {
       return res.status(401).send({message: "Invalid token"});

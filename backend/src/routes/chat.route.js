@@ -3,10 +3,27 @@ const ChatModel = require("../models/chat.model");
 const UserModel = require("../models/user.model");
 const app = express.Router();
 
-app.get("/", (req, res) => {
-  res.status(200).send({message: "chat User"});
+//fetching chats
+app.get("/", async (req, res) => {
+  try {
+    let chats = await ChatModel.find({users: {$elemMatch: {$eq: req.id}}})
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password")
+      .populate("latestMessage")
+      .sort({updatedAt: -1});
+
+    chats = await UserModel.populate(chats, {
+      path: "latestMessage.sender",
+      select: "name pic email",
+    });
+
+    res.status(200).send(chats);
+  } catch (e) {
+    res.status(400).send(e);
+  }
 });
 
+//creating new one on one chat
 app.post("/", async (req, res) => {
   const {id} = req.body;
   try {
@@ -15,14 +32,13 @@ app.post("/", async (req, res) => {
     let chatExist = await ChatModel.findOne({
       isGroupChat: false,
       $and: [
-        {users: {$elemMatch: {$eq: req.user._id}}},
+        {users: {$elemMatch: {$eq: req.id}}},
         {users: {$elemMatch: {$eq: id}}},
       ],
     })
       .populate("users", "-password")
       .populate("latestMessage");
-
-    chatExist = await UserModel.populate([chatExist], {
+    chatExist = await UserModel.populate(chatExist, {
       path: "latestMessage.sender",
       select: "name pic email",
     });
@@ -32,9 +48,8 @@ app.post("/", async (req, res) => {
     const chatData = {
       chatName: "sender",
       isGroupChat: false,
-      users: [req.user._id, id],
+      users: [req.id, id],
     };
-
     const chat = new ChatModel(chatData);
     await chat.save();
 
@@ -47,4 +62,6 @@ app.post("/", async (req, res) => {
     res.status(400).send(e);
   }
 });
+
+
 module.exports = app;
