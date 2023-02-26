@@ -7,6 +7,7 @@ const signupRoute= require("./routes/signup.route")
 const loginRoute= require("./routes/login.route");
 const middleware = require("./controllers/middleware");
 const chatRoute= require("./routes/chat.route");
+const searchUserRoute= require("./routes/searchUser.route");
 
 const PORT =  process.env.PORT
 const app= express()
@@ -21,8 +22,9 @@ app.get("/",(req,res)=>{
 app.use("/signup",signupRoute)
 app.use("/login",loginRoute)
 
-app.use(middleware)
+// app.use(middleware)
 app.use("/chat",chatRoute)
+app.use("/user",searchUserRoute)
 
 app.listen(PORT,async()=>{
     await connectDB()

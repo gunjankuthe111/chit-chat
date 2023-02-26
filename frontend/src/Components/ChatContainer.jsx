@@ -1,7 +1,7 @@
-import { Box, Button, Flex, Input, Text } from '@chakra-ui/react'
-import {MdKeyboardBackspace} from "react-icons/md"
+import {Box, Button, Flex, Input, Text} from "@chakra-ui/react";
+import {MdKeyboardBackspace} from "react-icons/md";
 import {AiOutlineEye, AiOutlineSend} from "react-icons/ai";
-import React from 'react'
+import React from "react";
 
 export const ChatContainer = () => {
   return (
@@ -40,4 +40,4 @@ export const ChatContainer = () => {
       </Flex>
     </Box>
   );
-}
+};

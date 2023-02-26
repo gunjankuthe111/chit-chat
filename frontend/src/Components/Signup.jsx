@@ -10,14 +10,28 @@ import {
 import React, {useState} from "react";
 
 export const Signup = () => {
+  const [image, setImage] = useState("");
   const [state, setState] = useState({
     name: "",
     email: "",
     password: "",
     confirmPass: "",
   });
-  const [passVis, setPassVis] = useState({first:false,second:false});
+  const [passVis, setPassVis] = useState({first: false, second: false});
 
+  const handlePic = () => {
+    const imageData = new FormData();
+    imageData.append("file", image);
+    imageData.append("upload_preset", "mcoekz23");
+    imageData.append("cloud_name", "djneamvbu");
+    fetch("https://api.cloudinary.com/v1_1/djneamvbu/image/upload", {
+      method: "post",
+      body: imageData,
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((e) => console.log(e));
+  };
   return (
     <VStack spacing="20px">
       <FormControl isRequired>
@@ -67,7 +81,7 @@ export const Signup = () => {
           <Input
             value={state.confirmPass}
             onChange={({target}) =>
-              setState({...state,confirmPass:target.value})
+              setState({...state, confirmPass: target.value})
             }
             type={passVis.second ? "text" : "password"}
             placeholder="Enter your Password here again"
@@ -86,9 +100,14 @@ export const Signup = () => {
       </FormControl>
       <FormControl>
         <FormLabel>Upload Your Picture</FormLabel>
-        <Input type="file" p={2} accept="image/*" />
+        <Input
+          type="file"
+          p={2}
+          accept="image/*"
+          onChange={({target}) => setImage(target.files[0])}
+        />
       </FormControl>
-      <Button colorScheme="blue" onClick={() => console.log(state)} w="full">
+      <Button colorScheme="blue" onClick={handlePic} w="full">
         Signin
       </Button>
     </VStack>

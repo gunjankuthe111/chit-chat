@@ -1,8 +1,50 @@
 const express = require("express");
+const ChatModel = require("../models/chat.model");
+const UserModel = require("../models/user.model");
 const app = express.Router();
 
 app.get("/", (req, res) => {
   res.status(200).send({message: "chat User"});
 });
 
-module.exports = app
+app.post("/", async (req, res) => {
+  const {id} = req.body;
+  try {
+    if (!id) return res.status(400).send("User Id not found");
+
+    let chatExist = await ChatModel.findOne({
+      isGroupChat: false,
+      $and: [
+        {users: {$elemMatch: {$eq: req.user._id}}},
+        {users: {$elemMatch: {$eq: id}}},
+      ],
+    })
+      .populate("users", "-password")
+      .populate("latestMessage");
+
+    chatExist = await UserModel.populate([chatExist], {
+      path: "latestMessage.sender",
+      select: "name pic email",
+    });
+
+    if (chatExist) return res.status(200).send(chatExist);
+
+    const chatData = {
+      chatName: "sender",
+      isGroupChat: false,
+      users: [req.user._id, id],
+    };
+
+    const chat = new ChatModel(chatData);
+    await chat.save();
+
+    const fullChat = await ChatModel.findOne({_id: chat._id}).populate(
+      "users",
+      "-password"
+    );
+    res.status(200).send(fullChat);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+module.exports = app;
