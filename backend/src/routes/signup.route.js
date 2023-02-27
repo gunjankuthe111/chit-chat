@@ -26,7 +26,11 @@ app.post("/", async (req, res) => {
           .status(400)
           .send(JSON.stringify({message: "Something went wrong"}));
       } else {
-        const user = new User({name, email, password: hash, isAdmin, pic});
+        const mongoQuery = pic
+          ? {name, email, password: hash, isAdmin, pic}
+          : {name, email, password: hash, isAdmin};
+          
+        const user = new User(mongoQuery);
         await user.save();
         return res.status(201).send({email, name, isAdmin: !!isAdmin});
       }

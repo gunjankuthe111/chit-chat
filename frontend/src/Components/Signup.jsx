@@ -8,8 +8,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, {useState} from "react";
+import {useDispatch, useSelector} from "react-redux"
+import { signupData } from "../redux/auth/auth.actions";
+import { SIGNUP_REQUEST, SIGNUP_SUCCESS } from "../redux/auth/auth.type";
 
 export const Signup = () => {
+  const dispatch = useDispatch()
+  const {loading} = useSelector(s=>s.auth)
   const [image, setImage] = useState("");
   const [state, setState] = useState({
     name: "",
@@ -17,11 +22,13 @@ export const Signup = () => {
     password: "",
     confirmPass: "",
   });
+
   const [passVis, setPassVis] = useState({first: false, second: false});
 
-  const handlePic = () => {
+  const handlePic = ({target}) => {
+    dispatch({type:SIGNUP_REQUEST})
     const imageData = new FormData();
-    imageData.append("file", image);
+    imageData.append("file", target.files[0]);
     imageData.append("upload_preset", "mcoekz23");
     imageData.append("cloud_name", "djneamvbu");
     fetch("https://api.cloudinary.com/v1_1/djneamvbu/image/upload", {
@@ -29,9 +36,17 @@ export const Signup = () => {
       body: imageData,
     })
       .then((res) => res.json())
-      .then((res) => console.log(res))
+      .then((res) => {
+        dispatch({type:SIGNUP_SUCCESS})
+        setImage(res.secure_url);
+      })
       .catch((e) => console.log(e));
   };
+
+  const handleSubmit = ()=>{
+    dispatch(signupData({...state,image}))
+  }
+
   return (
     <VStack spacing="20px">
       <FormControl isRequired>
@@ -104,10 +119,10 @@ export const Signup = () => {
           type="file"
           p={2}
           accept="image/*"
-          onChange={({target}) => setImage(target.files[0])}
+          onChange={handlePic}
         />
       </FormControl>
-      <Button colorScheme="blue" onClick={handlePic} w="full">
+      <Button colorScheme="blue" onClick={handleSubmit} w="full" isLoading={loading}>
         Signin
       </Button>
     </VStack>
