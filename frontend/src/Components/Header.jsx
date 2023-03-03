@@ -13,18 +13,30 @@ import {
   MenuButton,
   MenuList,
   Text,
+  VStack,
 } from "@chakra-ui/react";
 import {BiSearch} from "react-icons/bi";
 import {AiOutlineBell} from "react-icons/ai";
 import {MdOutlineKeyboardArrowDown} from "react-icons/md";
-import React from "react";
+import {useState} from "react";
 import {useDisclosure} from "@chakra-ui/hooks";
-
+import {useDispatch, useSelector} from "react-redux"
+import { searchData } from "../redux/user/user.actions";
 export const Header = () => {
-    const {isOpen, onOpen, onClose} = useDisclosure();
+  const dispatch= useDispatch()
+  const {searchUsers} = useSelector((u) => u.search);
+  console.log(searchUsers[0]?.name,"fhdjskl")
+  const [state, setState] = useState("");
+  const {isOpen, onOpen, onClose} = useDisclosure();
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center">
+      <Flex
+        py="5px"
+        mb="20px"
+        boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Box>
           <Button variant="ghost" onClick={onOpen}>
             <BiSearch style={{width: "20px", height: "20px"}} />
@@ -77,11 +89,18 @@ export const Header = () => {
           <DrawerBody>
             <Flex pb={2}>
               <Input
+                value={state}
                 placeholder="Search by name or email"
+                onChange={({target}) => setState(target.value)}
                 mr={2}
               />
-              <Button>Go</Button>
+              <Button onClick={() => dispatch(searchData(state))}>Go</Button>
             </Flex>
+            <VStack>
+              {searchUsers.map((ele) => (
+                <Box>{ele.name}</Box>
+              ))}
+            </VStack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

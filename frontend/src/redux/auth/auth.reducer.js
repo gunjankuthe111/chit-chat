@@ -31,8 +31,7 @@ export const AuthReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: true};
     }
     case LOGIN_SUCCESS: {
-      console.log(payload)
-      return {...state, loading: false, token:"", isAuth: true};
+      return {...state, loading: false, token:payload, isAuth: true};
     }
     case LOGIN_FAILURE: {
       return {...state, error: true, loading: false};

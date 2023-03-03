@@ -8,8 +8,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, {useState} from "react";
+import {useDispatch} from "react-redux"
+import { LoginData } from "../redux/auth/auth.actions";
 
 export const Login = () => {
+  const dispatch = useDispatch()
+
   const [state, setState] = useState({email: "", password: ""});
   const [passVis, setPassVis] = useState(false);
   return (
@@ -46,10 +50,18 @@ export const Login = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <Button colorScheme="blue" onClick={() => console.log(state)} w="full">
+      <Button
+        colorScheme="blue"
+        onClick={() => dispatch(LoginData(state))}
+        w="full"
+      >
         Login
       </Button>
-      <Button colorScheme="blue" w="full">
+      <Button
+        colorScheme="blue"
+        w="full"
+        onClick={() => setState({email: "gk@gmail.com", password: "12345"})}
+      >
         Get Guest User Credentials
       </Button>
     </VStack>

@@ -1,4 +1,4 @@
-import {SIGNUP_FAILURE, SIGNUP_REQUEST, SIGNUP_SUCCESS} from "./auth.type";
+import {LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, SIGNUP_FAILURE, SIGNUP_REQUEST, SIGNUP_SUCCESS} from "./auth.type";
 
 export const signupData =
   ({name, image, password, email}) =>
@@ -21,8 +21,21 @@ export const signupData =
       dispatch({type: SIGNUP_FAILURE});
     }
   };
-
+  
 export const LoginData = (cred) => async (dispatch) => {
   try {
-  } catch (e) {}
+    dispatch({type: LOGIN_REQUEST});
+    
+    let res = await fetch("http://localhost:8080/login", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cred),
+    });
+    res = await res.json();
+    dispatch({type: LOGIN_SUCCESS, payload: res.token});
+  } catch (e) {
+    dispatch({type: LOGIN_FAILURE});
+  }
 };
