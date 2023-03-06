@@ -23,7 +23,7 @@ app.get("/",(req,res)=>{
 app.use("/signup",signupRoute)
 app.use("/login",loginRoute)
 
-// app.use(middleware)
+app.use(middleware)
 app.use("/chat",chatRoute)
 app.use("/group-chat", groupCahtRoute);
 app.use("/user",groupCahtRoute)

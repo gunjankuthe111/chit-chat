@@ -22,10 +22,11 @@ import {useState} from "react";
 import {useDisclosure} from "@chakra-ui/hooks";
 import {useDispatch, useSelector} from "react-redux"
 import { searchData } from "../redux/user/user.actions";
+import { SearchedUser } from "./SearchedUser";
+import { UserMenu } from "./UserMenu";
 export const Header = () => {
   const dispatch= useDispatch()
   const {searchUsers} = useSelector((u) => u.search);
-  console.log(searchUsers[0]?.name,"fhdjskl")
   const [state, setState] = useState("");
   const {isOpen, onOpen, onClose} = useDisclosure();
   return (
@@ -74,14 +75,12 @@ export const Header = () => {
                 />
               </Box>
             </MenuButton>
-            <MenuList>
-              <MenuList>My Profile</MenuList>
-              <MenuList>Logout</MenuList>
-            </MenuList>
+            <UserMenu/>
           </Menu>
         </Flex>
       </Flex>
 
+                  
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
@@ -98,7 +97,7 @@ export const Header = () => {
             </Flex>
             <VStack>
               {searchUsers.map((ele) => (
-                <Box>{ele.name}</Box>
+                <SearchedUser key={ele._id} user={ele} />
               ))}
             </VStack>
           </DrawerBody>

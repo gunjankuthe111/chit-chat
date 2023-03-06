@@ -30,7 +30,7 @@ app.post("/", async (req, res) => {
           JWTSECTET,
           {expiresIn: "7 days"}
         );
-        return res.status(200).send({token});
+        return res.status(200).send({token,name:isExist.name,email,pic:isExist.pic});
       }
 
       return res.status(400).send({message: "Wrong credentials"});

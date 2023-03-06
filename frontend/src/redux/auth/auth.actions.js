@@ -34,7 +34,7 @@ export const LoginData = (cred) => async (dispatch) => {
       body: JSON.stringify(cred),
     });
     res = await res.json();
-    dispatch({type: LOGIN_SUCCESS, payload: res.token});
+    dispatch({type: LOGIN_SUCCESS, payload: res});
   } catch (e) {
     dispatch({type: LOGIN_FAILURE});
   }

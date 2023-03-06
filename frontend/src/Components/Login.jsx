@@ -7,15 +7,22 @@ import {
   InputRightElement,
   VStack,
 } from "@chakra-ui/react";
-import React, {useState} from "react";
-import {useDispatch} from "react-redux"
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux"
 import { LoginData } from "../redux/auth/auth.actions";
-
+import {useNavigate} from "react-router-dom"
 export const Login = () => {
+  const {isAuth} =  useSelector(s=>s.auth)
+  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const [state, setState] = useState({email: "", password: ""});
   const [passVis, setPassVis] = useState(false);
+
+  useEffect(()=>{
+    if(isAuth)navigate("/chat")
+  },[isAuth,navigate])
+
   return (
     <VStack spacing="20px">
       <FormControl isRequired>

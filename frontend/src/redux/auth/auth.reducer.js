@@ -12,6 +12,9 @@ const initialState = {
   isAuth: false,
   loading: false,
   token: "",
+  name:"",
+  email:"",
+  pic:"",
   success:false
 };
 
@@ -21,7 +24,6 @@ export const AuthReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: true};
     }
     case SIGNUP_SUCCESS: {
-      console.log(payload)
       return {...state, loading: false,success:true};
     }
     case SIGNUP_FAILURE: {
@@ -31,7 +33,7 @@ export const AuthReducer = (state = initialState, {type, payload}) => {
       return {...state, loading: true};
     }
     case LOGIN_SUCCESS: {
-      return {...state, loading: false, token:payload, isAuth: true};
+      return {...state, loading: false, token:payload.token,name:payload.name,email:payload.email, isAuth: true,pic:payload.pic};
     }
     case LOGIN_FAILURE: {
       return {...state, error: true, loading: false};
